@@ -93,9 +93,10 @@ class UserModel extends UserModelBase
     } // end getUserCommunities
 
   /** Get all */
-  function getAll($onlyPublic = false, $limit = 20, $order = 'lastname', $offset = null, $currentUser = null)
+  function getAll($onlyPublic = false, $limit = 20, $fields = array('*'), $order = 'lastname', $offset = null, $currentUser = null)
     {
     $sql = $this->database->select();
+    $sql->from("user",$fields);
     if($onlyPublic)
       {
       $orClause = '';
@@ -138,7 +139,7 @@ class UserModel extends UserModelBase
     $return = array();
     foreach($rowset as $row)
       {
-      $return[] = $this->initDao('User', $row);
+      $return[] = $this->initDao('User', $row, null, true);
       }
     return $return;
     } // end getAll()

@@ -160,7 +160,7 @@ class MIDASModel
    * @param $name name of the dao
    * @param $data array of values
    */
-  public function initDao($name, $data, $module = null)
+  public function initDao($name, $data, $module = null, $removeOld = false)
     {
     // If no data found we return false
     if(!$data)
@@ -198,6 +198,13 @@ class MIDASModel
         if(isset($data[$name]))
           {
           $obj->$name = $data[$name];
+          }
+          else
+          {
+            if ($removeOld)
+              {
+              unset($model->_mainData[$name]);
+              }
           }
         }
       $obj->saved = true;

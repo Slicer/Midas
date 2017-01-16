@@ -55,7 +55,7 @@ class ApiuserComponent extends AppComponent
     $apihelperComponent->validateParams($args, array('limit'));
 
     $userModel = MidasLoader::loadModel('User');
-    return $userModel->getAll(true, $args['limit']);
+    return $userModel->getAll(true, $args['limit'], array('firstname','lastname','company','website'));
     }
 
   /**
