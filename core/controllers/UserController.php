@@ -304,7 +304,12 @@ class UserController extends AppController
           {
           session_start();
           }
-        $this->userSession->Dao = $this->User->createUser(trim($form->getValue('email')), $form->getValue('password1'), trim($form->getValue('firstname')), trim($form->getValue('lastname')));
+        $this->userSession->Dao = $this->User->createUser(
+          trim($form->getValue('email')), 
+          $form->getValue('password1'),
+          htmlEntities(trim($form->getValue('firstname'))),
+          htmlEntities(trim($form->getValue('lastname')))
+        );
         session_write_close();
 
         $this->redirect('/feed?first=true');
@@ -312,7 +317,12 @@ class UserController extends AppController
       else
         {
         $email = strtolower(trim($form->getValue('email')));
-        $pendingUser = $this->PendingUser->createPendingUser($email, $form->getValue('firstname'), $form->getValue('lastname'), $form->getValue('password1'));
+        $pendingUser = $this->PendingUser->createPendingUser(
+          $email, 
+          htmlEntities($form->getValue('firstname')),
+          htmlEntities($form->getValue('lastname')),
+          $form->getValue('password1')
+        );
 
         $subject = 'User Registration';
         $url = $this->getServerURL().$this->view->webroot.'/user/verifyemail?email='.$email;
@@ -720,14 +730,14 @@ class UserController extends AppController
       if(isset($modifyAccount) && $this->logged)
         {
         $newEmail = trim($this->getParam('email'));
-        $firtname = trim($this->getParam('firstname'));
-        $lastname = trim($this->getParam('lastname'));
-        $company = trim($this->getParam('company'));
-        $privacy = $this->getParam('privacy');
-        $city = $this->getParam('city');
-        $country = $this->getParam('country');
-        $website = $this->getParam('website');
-        $biography = $this->getParam('biography');
+                $firtname = htmlentities(trim($this->getParam('firstname')));
+                $lastname = htmlentities(trim($this->getParam('lastname')));
+                $company = htmlentities(trim($this->getParam('company')));
+                $privacy = htmlentities($this->getParam('privacy'));
+                $city = htmlentities($this->getParam('city'));
+                $country = htmlentities($this->getParam('country'));
+                $website = htmlentities($this->getParam('website'));
+                $biography = htmlentities($this->getParam('biography'));
 
         if(!$accountForm->isValid($this->getRequest()->getPost()))
           {
