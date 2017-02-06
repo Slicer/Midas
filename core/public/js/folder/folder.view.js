@@ -35,6 +35,8 @@ $(document).ready(function () {
         button.click();
     });
     $('a.downloadFolderLink').click(function () {
+        midas.createNotice("Folder download is disabled. Contact jchris.fillionr[at]kitware[dot]com if you have questions.", 4000, 'warning');
+        /*
         var folderId = $(this).attr('element');
         $.post(json.global.webroot + '/download/checksize', {
             folderIds: folderId
@@ -47,6 +49,7 @@ $(document).ready(function () {
                 midas.promptDownloadApplet(folderId, '', retVal.sizeStr);
             }
         });
+        */
     });
 
     /**
