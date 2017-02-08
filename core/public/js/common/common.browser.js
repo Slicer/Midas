@@ -484,6 +484,8 @@ midas.createAction = function (node) {
         midas.showDialog('Link to this item');
     });
     $('a.downloadFolderLink').click(function () {
+        midas.createNotice("Folder download is disabled. Contact jchris.fillionr[at]kitware[dot]com if you have questions.", 4000, 'warning');
+        /*
         var folderId = $(this).attr('element');
         $.post(json.global.webroot + '/download/checksize', {
             folderIds: folderId
@@ -496,6 +498,7 @@ midas.createAction = function (node) {
                 midas.promptDownloadApplet(folderId, '', retVal.sizeStr);
             }
         });
+        */
     });
     $('a.downloadItemLink').click(function () {
         var itemId = $(this).attr('element');
