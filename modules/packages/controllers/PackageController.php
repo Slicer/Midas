@@ -35,6 +35,13 @@ class Packages_PackageController extends Packages_AppController
       {
       throw new Zend_Exception('Must specify an id parameter');
       }
+
+    $validator = new Zend_Validate_Digits();
+    if (!$validator->isValid($packageId))
+      {
+      throw new Zend_Exception('Must specify an id parameter');
+      }
+
     $package = $this->Packages_Package->load($packageId);
     if(!$package)
       {
