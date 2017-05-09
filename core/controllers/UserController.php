@@ -223,7 +223,12 @@ class UserController extends AppController
       if($adminCreate || !isset(Zend_Registry::get('configGlobal')->verifyemail) ||
          Zend_Registry::get('configGlobal')->verifyemail != '1')
         {
-        $newUser = $this->User->createUser($email, $form->getValue('password1'), $form->getValue('firstname'), $form->getValue('lastname'));
+        $newUser = $this->User->createUser(
+            $email,
+            $form->getValue('password1'),
+            htmlEntities(trim($form->getValue('firstname'))),
+            htmlEntities(trim($form->getValue('lastname')))
+        );
 
         if($adminCreate)
           {
@@ -262,7 +267,12 @@ class UserController extends AppController
         }
       else
         {
-        $pendingUser = $this->PendingUser->createPendingUser($email, $form->getValue('firstname'), $form->getValue('lastname'), $form->getValue('password1'));
+        $pendingUser = $this->PendingUser->createPendingUser(
+            $email,
+            htmlEntities(trim($form->getValue('firstname'))),
+            htmlEntities(trim($form->getValue('lastname'))),
+            $form->getValue('password1')
+        );
 
         $subject = 'User Registration';
         $url = $this->getServerURL().$this->view->webroot.'/user/verifyemail?email='.$email;
@@ -319,8 +329,8 @@ class UserController extends AppController
         $email = strtolower(trim($form->getValue('email')));
         $pendingUser = $this->PendingUser->createPendingUser(
           $email, 
-          htmlEntities($form->getValue('firstname')),
-          htmlEntities($form->getValue('lastname')),
+          htmlEntities(trim($form->getValue('firstname'))),
+          htmlEntities(trim($form->getValue('lastname'))),
           $form->getValue('password1')
         );
 
@@ -729,15 +739,15 @@ class UserController extends AppController
 
       if(isset($modifyAccount) && $this->logged)
         {
-        $newEmail = trim($this->getParam('email'));
-                $firtname = htmlentities(trim($this->getParam('firstname')));
-                $lastname = htmlentities(trim($this->getParam('lastname')));
-                $company = htmlentities(trim($this->getParam('company')));
-                $privacy = htmlentities($this->getParam('privacy'));
-                $city = htmlentities($this->getParam('city'));
-                $country = htmlentities($this->getParam('country'));
-                $website = htmlentities($this->getParam('website'));
-                $biography = htmlentities($this->getParam('biography'));
+        $newEmail = $this->getSafeParam('email', /* trim = */ true);
+        $firtname = $this->getSafeParam('firstname', /* trim = */ true);
+        $lastname = $this->getSafeParam('lastname', /* trim = */ true);
+        $company = $this->getSafeParam('company', /* trim = */ true);
+        $privacy = $this->getSafeParam('privacy');
+        $city = $this->getSafeParam('city');
+        $country = $this->getSafeParam('country');
+        $website = $this->getSafeParam('website');
+        $biography = $this->getSafeParam('biography');
 
         if(!$accountForm->isValid($this->getRequest()->getPost()))
           {

@@ -367,4 +367,18 @@ class MIDAS_GlobalController extends Zend_Controller_Action
       }
     return $array;
     }
+
+  /**
+   * Return a sanitized request parameter useful to prevent XSS attack.
+   */
+  public function getSafeParam($paramName)
+    {
+    return $this->sanitize($this->getParam($paramName));
+    }
+
+  protected function sanitize($value)
+    {
+    return htmlspecialchars($value, ENT_QUOTES);
+    }
+
   } // end class
