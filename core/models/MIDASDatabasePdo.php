@@ -201,15 +201,13 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
   /**
    * @method  function link($var, $daoParent, $daoSon)
    *  create a link between 2 tables
-   * @param $var name of the attribute we search
+   * @param $var name of the attribute we link
    * @param $daoParent
    * @param $daoSon
    * @return sql result
    */
   public function link($var, $daoParent, $daoSon)
     {
-    $objs = $daoParent->get($var);
-
     if(isset($this->_mainData[$var]['module']))
       {
       $model = MidasLoader::loadModel($this->_mainData[$var]['model'],
@@ -219,13 +217,19 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       {
       $model = MidasLoader::loadModel($this->_mainData[$var]['model']);
       }
-    foreach($objs as $obj)
-      {
-      if($model->compareDao($obj, $daoSon))
-        {
-        return;
-        }
-      }
+    // The following code is:
+    // (1) iterating over all objects of type <var> linked in $daoParent. <var> could be "items", "communities", "users"
+    // (2) returning if the object being added to $daoParent is found. The comparison is done by comparing all the
+    //     columns declared as MIDAS_DATA in <var>ModelBase)
+    //
+    //$objs = $daoParent->get($var);
+    //foreach($objs as $obj)
+    //  {
+    //  if($model->compareDao($obj, $daoSon))
+    //    {
+    //    return;
+    //    }
+    //  }
     unset($daoParent->$var);
     $data = array();
 
