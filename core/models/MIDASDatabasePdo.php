@@ -62,6 +62,15 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     }
 
   /**
+   * Get Logger
+   * @return Zend_Log
+   */
+  public function getLogger()
+    {
+    return Zend_Registry::get('logger');
+    }
+
+  /**
    * @method public  get()
    * Generic get function. You can define custom function.
    * @param $var name of the element we want to get
