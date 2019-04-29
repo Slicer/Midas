@@ -157,7 +157,10 @@ class MIDAS_GlobalDao
         {
         return $this->getModel()->getValue($var, null, $this);
         }
-      return $this->getModel()->getValue($var, $this->$key, $this);
+      #Zend_Registry::get('logger')->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
+      $ob = $this->getModel()->getValue($var, $this->$key, $this);
+      #Zend_Registry::get('logger')->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__."- ob:".var_export($ob, true));
+      return $ob;
       }
     }
 

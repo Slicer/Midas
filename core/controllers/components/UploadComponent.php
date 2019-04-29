@@ -242,17 +242,23 @@ class UploadComponent extends AppComponent
       $item->setPrivacyStatus(MIDAS_PRIVACY_PRIVATE); // Must set this flag private initially
       $itemModel->save($item, false);
       $changes = 'Initial revision';
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
 
       $folderModel->addItem($parent, $item);
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
 
       $feed = $feedModel->createFeed($userDao, MIDAS_FEED_CREATE_ITEM, $item);
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
 
       $itemModel->copyParentPolicies($item, $parent, $feed);
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $itempolicyuserModel->createPolicy($userDao, $item, MIDAS_POLICY_ADMIN);
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $feedpolicyuserModel->createPolicy($userDao, $feed, MIDAS_POLICY_ADMIN);
       $this->getLogger()->debug('Item uploaded ('.$item->getName().', id='.$item->getKey().')');
       }
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     Zend_Loader::loadClass('ItemRevisionDao', BASE_PATH.'/core/models/dao');
     $itemRevisionDao = new ItemRevisionDao;
     $itemRevisionDao->setChanges($changes);
@@ -261,6 +267,7 @@ class UploadComponent extends AppComponent
     $itemRevisionDao->setLicenseId($license);
     $itemModel->addRevision($item, $itemRevisionDao);
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     // Add bitstreams to the revision
     Zend_Loader::loadClass('BitstreamDao', BASE_PATH.'/core/models/dao');
     $bitstreamDao = new BitstreamDao;
@@ -269,14 +276,17 @@ class UploadComponent extends AppComponent
     $bitstreamDao->setChecksum($filemd5);
     $bitstreamDao->fillPropertiesFromPath();
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     $assetstoreDao = $assetstoreModel->getDefault();
     $bitstreamDao->setAssetstoreId($assetstoreDao->getKey());
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     if($assetstoreDao == false)
       {
       throw new Zend_Exception("Unable to load default assetstore");
       }
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     // Upload the bitstream if necessary (based on the assetstore type)
     $this->uploadBitstream($bitstreamDao, $assetstoreDao, $copy);
     $itemRevisionModel->addBitstream($itemRevisionDao, $bitstreamDao);

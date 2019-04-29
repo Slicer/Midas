@@ -133,12 +133,19 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       }
     else if($this->_mainData[$var]['type'] == MIDAS_MANY_TO_MANY)
       {
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       return $this->getLinkedObject($var, $dao);
       }
     else
       {
       throw new Zend_Exception('Unable to load data type ' . $var);
       }
+    }
+
+  function convert_mem_usage($size)
+    {
+    $unit=array('b','kb','mb','gb','tb','pb');
+    return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
     }
 
   /**
@@ -160,29 +167,45 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       $model = MidasLoader::loadModel($this->_mainData[$var]['model']);
       }
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     $parentColumn = $this->_mainData[$var]['parent_column'];
     $sql = $this->select()
             ->setIntegrityCheck(false)
             ->from($model->getName())
             ->joinUsing($this->_mainData[$var]['table'], $this->_mainData[$var]['child_column'])
             ->where($this->_mainData[$var]['parent_column'] . ' = ?', $dao->$parentColumn);
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__.' - sql:'.$sql);
     $rowset = $this->fetchAll($sql);
 
+    #$this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__." rowset:".var_export($rowset, true));
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     $return = array();
+    $i = 0;
+    $baseline = memory_get_usage();
     foreach($rowset as $row)
       {
+      $before = memory_get_usage();
       if(isset($this->_mainData[$var]['module']))
         {
+        #$this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
         $return[] = $model->initDao($this->_mainData[$var]['model'],
                                     $row,
                                     $this->_mainData[$var]['module']);
         }
       else
         {
+        #$this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__." rowset:".var_export($rowset, true));
+        #$this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
         $return[] = $model->initDao($this->_mainData[$var]['model'], $row);
         }
+      $size = $this->convert_mem_usage(memory_get_usage() - $before);
+      $cumul = $this->convert_mem_usage(memory_get_usage() - $baseline);
+      $total = $this->convert_mem_usage(memory_get_usage());
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__." [i:".$i."][memory:".$size."][cumul_memory:".$cumul."][total_size:".$total."]"); 
+      $i = $i + 1;
       }
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__." - return size:".count($return));
     return $return;
     } //end getLinkedObject
 
@@ -208,6 +231,10 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    */
   public function link($var, $daoParent, $daoSon)
     {
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__.' - var:'.$var);
+    #$this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__." - daoParent:".var_export($daoParent, true));
+    #$this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__." - daoSon:".var_export($daoSon, true));
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     if(isset($this->_mainData[$var]['module']))
       {
       $model = MidasLoader::loadModel($this->_mainData[$var]['model'],
@@ -217,6 +244,9 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
       {
       $model = MidasLoader::loadModel($this->_mainData[$var]['model']);
       }
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__." - daoSon:".var_export($daoSon, true));
+
     // The following code is:
     // (1) iterating over all objects of type <var> linked in $daoParent. <var> could be "items", "communities", "users"
     // (2) returning if the object being added to $daoParent is found. The comparison is done by comparing all the
@@ -230,7 +260,9 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
     //    return;
     //    }
     //  }
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     unset($daoParent->$var);
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     $data = array();
 
     $data[$this->_mainData[$var]['parent_column']] = $daoParent->get($this->_mainData[$var]['parent_column']);
@@ -322,6 +354,7 @@ class MIDASDatabasePdo extends Zend_Db_Table_Abstract implements MIDASDatabaseIn
    */
   public function save($dataarray)
     {
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__." - dataarray:".var_export($dataarray, true));
     if(isset($this->_key) && isset($dataarray[$this->_key]))
       {
       $key = $dataarray[$this->_key];

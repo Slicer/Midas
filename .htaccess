@@ -16,9 +16,9 @@ Options -Indexes
 
     # 2018.12.06 (Jc)
     # See https://perishablepress.com/how-to-enable-php-error-logging-via-htaccess/
-    php_flag display_startup_errors off
-    php_flag display_errors off
-    php_flag html_errors off
+    #php_flag display_startup_errors off
+    #php_flag display_errors off
+    #php_flag html_errors off
 </IfModule>
 
 <IfModule rewrite_module>

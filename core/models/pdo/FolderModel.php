@@ -906,7 +906,9 @@ class FolderModel extends FolderModelBase
       $item->setName($itemModel->updateItemName($item->getName(), $folder));
       $itemModel->save($item);
       }
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     $this->database->link('items', $folder, $item);
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     } // end function addItem
 
   /** Remove an item from a folder
