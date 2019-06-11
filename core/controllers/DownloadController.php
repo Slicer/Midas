@@ -185,7 +185,8 @@ class DownloadController extends AppController
           $filename = $bitstream->getName();
           $path = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
           Zend_Registry::get('dbAdapter')->closeConnection();
-          $zip->add_file_from_path($filename, $path);
+          $opt = array('time' => strtotime($bitstream->getDate()));
+          $zip->add_file_from_path($filename, $path, $opt);
           }
         $zip->finish();
         $this->Item->incrementDownloadCount($revision->getItem());
@@ -245,7 +246,8 @@ class DownloadController extends AppController
           $filename = $path.$bitstream->getName();
           $fullpath = $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath();
           Zend_Registry::get('dbAdapter')->closeConnection();
-          $zip->add_file_from_path($filename, $fullpath);
+          $opt = array('time' => strtotime($bitstream->getDate()));
+          $zip->add_file_from_path($filename, $fullpath, $opt);
           }
         $this->Item->incrementDownloadCount($item);
         unset($item);

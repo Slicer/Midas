@@ -1161,7 +1161,8 @@ class FolderModel extends FolderModelBase
             {
             $currPath = $path.'/'.$bitstream->getName();
             }
-          $zip->add_file_from_path($currPath, $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath());
+          $opt = array('time' => strtotime($bitstream->getDate()));
+          $zip->add_file_from_path($currPath, $bitstream->getAssetstore()->getPath().'/'.$bitstream->getPath(), $opt);
           }
         }
       $this->Item->incrementDownloadCount($item);
