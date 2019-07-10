@@ -483,6 +483,7 @@ midas.createAction = function (node) {
         midas.loadDialog("links" + $(this).attr('type') + $(this).attr('element'), '/share/links?type=' + $(this).attr('type') + '&id=' + $(this).attr('element'));
         midas.showDialog('Link to this item');
     });
+    $('a.downloadFolderLink').parent().hide()
     $('a.downloadFolderLink').click(function () {
         midas.createNotice("Folder download is disabled. Contact jchris.fillionr[at]kitware[dot]com if you have questions.", 4000, 'warning');
         /*

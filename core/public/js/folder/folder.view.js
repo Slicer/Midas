@@ -34,6 +34,7 @@ $(document).ready(function () {
         midas.resetUploadButton();
         button.click();
     });
+    $('a.downloadFolderLink').parent().hide()
     $('a.downloadFolderLink').click(function () {
         midas.createNotice("Folder download is disabled. Contact jchris.fillionr[at]kitware[dot]com if you have questions.", 4000, 'warning');
         /*
